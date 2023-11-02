@@ -1,0 +1,95 @@
+name:TruffleHog scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+  pull-requests: write
+  jobs:
+  your-job-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+  jobs:
+  TruffleHog:
+    runs-on: ubuntu-latest
+	    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+		   - name: TruffleHog OSS
+        id: trufflehog
+        uses: trufflesecurity/trufflehog@main
+        continue-on-error: true
+        with:
+          path: ./
+          base: "${{ github.event.repository.default_branch }}"
+          head: HEAD
+          extra_args: --debug
+		  
+		  jobs:
+  bandit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+		- name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run Bandit
+      run: bandit -r .
+		
+		jobs:
+  brakeman:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+
+    - name: Install Bundler
+      run: gem install bundler
+
+    - name: Install dependencies
+      run: bundle install
+
+    - name: Run Brakeman
+      run: bundle exec brakeman
+	  
+	  jobs:
+  cppcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up C/C++ tools
+      run: sudo apt-get install cppcheck
+
+    - name: Run Cppcheck
+      run: cppcheck .
